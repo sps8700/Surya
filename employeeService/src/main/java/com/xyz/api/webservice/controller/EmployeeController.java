@@ -7,6 +7,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.xyz.api.webservice.dto.EmployeeDTO;
 import com.xyz.api.webservice.exception.EmployeeNotFound;
+import com.xyz.api.webservice.repository.EmployeePageRepo;
 import com.xyz.api.webservice.repository.EmployeeRepo;
 import com.xyz.api.webservice.service.EmployeeService;
 
@@ -29,9 +33,12 @@ public class EmployeeController {
 	EmployeeService employeeService;
 	@Autowired
 	EmployeeRepo employeeRepo;
-
+	@Autowired
+	EmployeePageRepo employeePageReop;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
+	/********* Static Requests ***********/
 	
   	@GetMapping("/employees")
 	public List<EmployeeDTO> getAllEmployee() {
@@ -66,10 +73,9 @@ public class EmployeeController {
 		EmployeeDTO emp = employeeService.updateEmployee(id, employee);
 		if(emp == null)
 			throw new EmployeeNotFound("Emp id - "+id+" not exists");
-		//ResponseEntity.notFound();
 	}
 	
-	/********* JPA Changes ***********/
+	/********* JPA Requests ***********/
 	
 	@GetMapping("/jpa/employees")
 	public List<EmployeeDTO> getAllEmployeeJPA() {
@@ -111,4 +117,22 @@ public class EmployeeController {
 			emp.setEmpName(employee.getEmpName());
 		employeeRepo.save(emp);
 	}
+	
+	/********* JPA Paging Requests ***********/
+
+	@GetMapping("/jpa/employees/page")
+	public Page<EmployeeDTO> getAllEmployeeJPAPage() {
+		logger.info("Inside JPA Get request");
+		Pageable paging = PageRequest.of(0, 3);
+		Page<EmployeeDTO> page = employeePageReop.findAll(paging);
+		return page;
+	}
+	
+//	@GetMapping("/jpa/employees/page")
+//	public Page<EmployeeDTO> getAllEmployeeJPAByPageNo(@RequestParam("pageNo") int pageNo) {
+//		logger.info("Inside JPA Get request");
+//		Pageable paging = PageRequest.of(pageNo, 3);
+//		Page<EmployeeDTO> page = employeePageReop.findAll(paging);
+//		return page;
+//	}
 }
