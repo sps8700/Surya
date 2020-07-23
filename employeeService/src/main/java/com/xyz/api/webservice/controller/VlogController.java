@@ -29,12 +29,12 @@ public class VlogController {
 	EmployeeRepo employeeRepo;
 	
 	@GetMapping("/jpa/vlog")
-	public List<VlogDTO> findAllDepartment() {
+	public List<VlogDTO> findAllVlog() {
 		return vlogRepo.findAll();
 	}
 	
 	@GetMapping("/jpa/vlog/{id}")
-	public VlogDTO findDepartmentById(@PathVariable int id) {
+	public VlogDTO findVlogById(@PathVariable int id) {
 		Optional<VlogDTO> vlog = vlogRepo.findById(id);
 		if(!vlog.isPresent())
 			throw new VlogNotFound("vlog id: "+id+" not found");
@@ -42,7 +42,7 @@ public class VlogController {
 	}
 
 	@GetMapping("/jpa/employees/{id}/vlog")
-	public List<VlogDTO> findEmployeeListByDepartment(@PathVariable int id) {
+	public List<VlogDTO> findVlogByEmployee(@PathVariable int id) {
 		Optional<EmployeeDTO> emp = employeeRepo.findById(id);
 		if(!emp.isPresent())
 			throw new EmployeeNotFound("Emp id: "+id+" not found");
@@ -51,7 +51,7 @@ public class VlogController {
 
 
 	@PostMapping("/jpa/employees/{id}/vlog")
-	public ResponseEntity<Object> createEmployee(@PathVariable int id, @RequestBody VlogDTO vlog) {
+	public ResponseEntity<Object> createVlogByEmployee(@PathVariable int id, @RequestBody VlogDTO vlog) {
 		Optional<EmployeeDTO> emp = employeeRepo.findById(id);
 		if(!emp.isPresent())
 			throw new EmployeeNotFound("Emp id: "+id+" not found");
@@ -62,7 +62,7 @@ public class VlogController {
 	}
 	
 	@PostMapping("/jpa/vlog")
-	public ResponseEntity<Object> createDepartment(@RequestBody VlogDTO vlog) {
+	public ResponseEntity<Object> createVlog(@RequestBody VlogDTO vlog) {
 		VlogDTO vlog1 = vlogRepo.save(vlog);
 		URI loc = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(vlog1.getVlogId()).toUri();
 		return ResponseEntity.created(loc).build();
@@ -70,7 +70,7 @@ public class VlogController {
 	
 	
 	@GetMapping("/jpa/employees/{id}/vlog/{vlogId}")
-	public VlogDTO findEmployeeByDepartment(@PathVariable int id,@PathVariable int vlogId) {
+	public VlogDTO findVlogByEmployeeId(@PathVariable int id,@PathVariable int vlogId) {
 		Optional<EmployeeDTO> emp = employeeRepo.findById(id);
 		if(!emp.isPresent())
 			throw new EmployeeNotFound("Employee id: "+id+" not found");

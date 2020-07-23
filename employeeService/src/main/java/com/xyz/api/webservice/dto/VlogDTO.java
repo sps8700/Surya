@@ -59,5 +59,10 @@ public class VlogDTO {
 	public void setEmployee(EmployeeDTO employee) {
 		this.employee = employee;
 	}
+
+	@Override
+	public String toString() {
+		return "VlogDTO [vlogId=" + vlogId + ", vlogTitle=" + vlogTitle + ", vlogBody=" + vlogBody + "]";
+	}
 	
 }
